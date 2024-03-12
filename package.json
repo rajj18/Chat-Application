@@ -1,0 +1,23 @@
+{
+  "name": "chat-application",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon index.js",
+    "start": "nodemon src/index.js"
+  },
+  "author": "Rajhans Jajme",
+  "license": "ISC",
+  "dependencies": {
+    "bad-words": "^3.0.4",
+    "express": "^4.18.3",
+    "http": "^0.0.1-security",
+    "path": "^0.12.7",
+    "socket.io": "^4.7.4"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0"
+  }
+}
