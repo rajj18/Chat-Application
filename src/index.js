@@ -46,7 +46,7 @@ io.on('connection', (socket) => {
     // Event listener for when a user is typing
     socket.on('typing', (message) => {
         const user = getUser(socket.id)
-        if(message.length()>1){
+        if(message.length>1){
             socket.broadcast.to(user.room).emit('isTyping', `${user} is typing...`)
         }
     })
@@ -54,6 +54,9 @@ io.on('connection', (socket) => {
     // Event listener for when a user sends a message
     socket.on('sendMessage', (message, callback) => {
         const user = getUser(socket.id)
+        if (!user) {
+            return callback('You are not connected to a room.'); // Handle the case where there's no user
+        }
         const filter = new Filter()
 
         if (filter.isProfane(message)) {
@@ -73,6 +76,9 @@ io.on('connection', (socket) => {
     // Event listener for when a user sends their location
     socket.on('sendLocation', (coords, callback) => {
         const user = getUser(socket.id)
+        if (!user) {
+            return callback('You are not connected to a room.'); // Handle the case where there's no user
+        }
         if(user){
             // Emit location message to the user who sent it
             socket.emit('locationMessage', generateLocationMessage("You", `https://google.com/maps?q=${coords.latitude},${coords.longitude}`))
@@ -83,7 +89,7 @@ io.on('connection', (socket) => {
     })
 
     // Event listener for when a user disconnects
-    socket.on('disconnect', () => {
+    socket.on('leaveChat', () => {
         const user = removeUser(socket.id)
 
         if (user) {
@@ -97,6 +103,14 @@ io.on('connection', (socket) => {
         }
     })
 })
+
+// Express route to serve information about active rooms
+app.get('/active-rooms', (req, res) => {
+    // Retrieve information about active rooms from your server data
+    const activeRooms = getActiveRooms(); // Implement this function to fetch active rooms
+    res.json(activeRooms);
+});
+
 
 // Start the server
 server.listen(port, () => {

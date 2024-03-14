@@ -6,6 +6,7 @@ const $messageForm = document.querySelector('#message-form')
 const $messageFormInput = $messageForm.querySelector('input')
 const $messageFormButton = $messageForm.querySelector('button')
 const $sendLocationButton = document.querySelector('#send-location')
+const $leaveChatButton = document.querySelector( '#leave-chat' )
 const $messages = document.querySelector('#messages')
 
 // Templates
@@ -76,6 +77,13 @@ socket.on('locationMessage', (message) => {
     autoScroll()
 })
 
+socket.on('leaveChat', () => {
+    console.log('Leaving the chat...');
+    
+    socket.disconnect(); // Disconnect from the socket
+    // window.location.href = '../index.html';
+});
+
 // Event listener for receiving room data
 socket.on('roomData', ({ room, users, count }) => {
     const html = Mustache.render(sidebarTemplate, {
@@ -135,3 +143,13 @@ socket.emit('join', { username, room }, (error) => {
         location.href = '/' // Redirect to homepage if there's an error
     }
 })
+
+
+
+// Event listener for clicking the Leave Chat button
+$leaveChatButton.addEventListener('click', () => {
+    socket.emit('leaveChat'); // Emit a 'disconnect' event to the server when the button is clicked
+    //redirecting to another page
+    window.location.href = '../index.html';
+});
+//document.getElementById('leave-chat').addEventListener('click', leaveChat);
